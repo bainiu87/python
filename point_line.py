@@ -56,8 +56,8 @@ while abs(last_hope-cur_hope) > eplision:
     grad_a = grad_all[0]
     grad_b = grad_all[1]
     print "A 损失值:"+str(cur_hope)
-    cur_a-=0.01 * grad_a
-    cur_b-=0.01 * grad_b
+    cur_a-=0.00001 * grad_a # delta_a 非常小，只会降低速度，但是能保证正确性 
+    cur_b-=0.00001 * grad_b  #delta_b 同理
     print "a、b的偏导数：" + str(grad_a) + "/" + str(grad_b)
 cur_c= 5 * cur_a + cur_b
 plt.plot([0, 5], [cur_b, cur_c])
