@@ -20,6 +20,7 @@ def Objvalue(X,Y,cur_a,cur_b):
         y=Y[i]
         y_hat=cur_a*x+cur_b
         su+=(y-y_hat)**2
+    su=su+cur_a**2+cur_b**2
     return su
 
 #当前B值
@@ -35,8 +36,8 @@ def getGrad(X,Y,cur_a,cur_b):
     grad_a=0
     grad_b=0
     for i in xrange(0,len(X)):
-        grad_a += 2 * cur_a * X[i] ** 2 + 2 * cur_b * X[i] - 2 * X[i] * Y[i]
-        grad_b += 2 * cur_a * X[i] + 2 * cur_b - 2 * Y[i]
+        grad_a += 2 * cur_a * X[i] ** 2 + 2 * cur_b * X[i] - 2 * X[i] * Y[i] + 2 * cur_a
+        grad_b += 2 * cur_a * X[i] + 2 * cur_b - 2 * Y[i] + 2 * cur_b
     return [grad_a,grad_b]
 
 #初始a、b
