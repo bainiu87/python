@@ -5,20 +5,22 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 
 plt.figure(figsize=(10,9),dpi=100)
-mean = [0,0]
-cov = [[10,0],[0,10]]
+a_mean = [0,0]
+b_mean = [100,100]
+cov = [[100,0],
+       [0,100]]
 
 #apple
-a_X,a_Y = np.random.multivariate_normal(mean,cov,10).T
-a_Z = [1,1,1,1,1,1,1,1,1,1]
+a_X,a_Y = np.random.multivariate_normal(a_mean,cov,1000).T
+a_Z = np.repeat(1, 1000)
 
 #peal
-p_X,p_Y = np.random.multivariate_normal(mean,cov,10).T
-p_Z = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+p_X,p_Y = np.random.multivariate_normal(b_mean,cov,1000).T
+p_Z = np.repeat(-1,1000)
 
-X = a_X + p_X
-Y = a_Y + p_Y
-Z = a_Z + p_Z
+X = np.append(a_X , p_X)
+Y = np.append(a_Y , p_Y)
+Z = np.append(a_Z , p_Z)
 
 reg = 0
 
@@ -75,7 +77,8 @@ grad_a_list = []
 grad_b_list = []
 #导数c list
 grad_c_list = []
-while abs(last_hope-cur_hope) > eplision:
+
+while abs(last_hope-cur_hope) > eplision and nmb < 200:
     nmb += 1
     print "当前收敛值(0.0001)：" + str(abs(last_hope - cur_hope))
     last_hope = cur_hope
@@ -111,6 +114,7 @@ while abs(last_hope-cur_hope) > eplision:
         next_grad_a = next_grad_all[0]
         next_grad_b = next_grad_all[1]
         next_grad_c = next_grad_all[2]
+
         if abs(next_grad_a) > abs(grad_a) and abs(next_grad_b) > abs(grad_b) and abs(next_grad_c) > abs(grad_c):
             a = a / 10
         else:
@@ -123,15 +127,17 @@ while abs(last_hope-cur_hope) > eplision:
     print "cur_a:" + str(cur_a) + "/ cur_b:" + str(cur_b) + "/ cur_c:" + str(cur_c)
 
 
+
 b=-cur_c/cur_b
-c=-10 * (cur_a/cur_b)+b
+max_y=-max(X) * (cur_a/cur_b)+b
+min_y=-min(X) * (cur_a/cur_b)+b
 
 nmb_list=[]
 for i in xrange(1,nmb+1):
     nmb_list.append(i)
 
 plt.subplot(1,1,1)
-plt.plot([0, 10], [b, c],"r-",label="best line")
+plt.plot([min(X), max(X)], [min_y, max_y],"r-",label="best line")
 plt.plot(a_X, a_Y, "o", color="green", label = "apple")
 plt.plot(p_X, p_Y, "o", color="blue", label = "peal" )
 plt.legend()
@@ -153,4 +159,3 @@ plt.legend()
 # plt.legend()
 
 plt.show()
-
