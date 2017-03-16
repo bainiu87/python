@@ -5,15 +5,24 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import axes3d
 
 plt.figure(figsize=(10,9),dpi=100)
-mean = [0,0]
-cov = [[10,0],[0,10]]
+
+
 
 #apple
-a_X,a_Y = np.random.multivariate_normal(mean,cov,10).T
+mean = [0,0]
+cov = [[10,0],[0,10]]
+a_X,a_Y = np.random.multivariate_normal(mean,cov,100).T
+a_X=list(a_X)
+a_Y=list(a_Y)
 a_Z = [1,1,1,1,1,1,1,1,1,1]
 
+
 #peal
-p_X,p_Y = np.random.multivariate_normal(mean,cov,10).T
+mean = [100,100]
+cov = [[10,0],[0,10]]
+p_X,p_Y = np.random.multivariate_normal(mean,cov,100).T
+p_X=list(p_X)
+p_Y=list(p_Y)
 p_Z = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
 
 X = a_X + p_X
@@ -124,14 +133,14 @@ while abs(last_hope-cur_hope) > eplision:
 
 
 b=-cur_c/cur_b
-c=-10 * (cur_a/cur_b)+b
+c=-110 * (cur_a/cur_b)+b
 
 nmb_list=[]
 for i in xrange(1,nmb+1):
     nmb_list.append(i)
 
 plt.subplot(1,1,1)
-plt.plot([0, 10], [b, c],"r-",label="best line")
+plt.plot([-10, 100], [b, c],"r-",label="best line")
 plt.plot(a_X, a_Y, "o", color="green", label = "apple")
 plt.plot(p_X, p_Y, "o", color="blue", label = "peal" )
 plt.legend()
