@@ -227,7 +227,7 @@ plt.plot(nmb_list,grad_b_list,"yo-",label="grad_b")
 plt.legend()
 
 plt.subplot(3,4,8)
-plt.plot(nmb_list,grad_b_list,"yo-",label="grad_b")
+plt.plot(nmb_list,grad_c_list,"go-",label="grad_c")
 plt.legend()
 
 plt.subplot(3,1,3)
