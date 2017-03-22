@@ -67,12 +67,12 @@ def get_T_F_P(numb_a,numb_p,cur_a,cur_b,cur_c,X,Y,Z):
     for l in xrange(0,len(R)):
         if R[l][0] == 1:
             tp += 1
-            TP.append(tp / numb_a)
-            FP.append(fp / numb_p)
+            TP.append(tp / (numb_a * 1.000))
+            FP.append(fp / (numb_p * 1.000))
         if R[l][0] == -1:
             fp += 1
-            TP.append(tp / numb_a)
-            FP.append(fp / numb_p)
+            TP.append(tp / (numb_a * 1.000))
+            FP.append(fp / (numb_p * 1.000))
     return [TP,FP]
 
 #计算auc
