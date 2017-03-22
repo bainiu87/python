@@ -4,45 +4,48 @@ import scipy
 import matplotlib.pyplot as plt
 
 #求目标函数的导数
-def get_log(a, b, c, X, Y, Z):
+def get_grad(cur_a, cur_b, cur_c, X, Y, Z):
     # 1 代表 苹果 -1 代表梨
     E = np.e
-    log_a_a = 0
-    log_a_b = 0
-    log_a_c = 0
-    log_p_a = 0
-    log_p_b = 0
-    log_p_c = 0
+    grad_a_a = 0
+    grad_a_b = 0
+    grad_a_c = 0
+    grad_p_a = 0
+    grad_p_b = 0
+    grad_p_c = 0
     for i in xrange(0,len(X)):
-        p = E ** (a * X[i] + b * Y[i] + c)
+        p = 1+E ** (cur_a * X[i] + cur_b * Y[i] + cur_c)
         if Z[i] == 1:
-            log_a_a += X[i] - 1/p * (p - 1) * X[i]
-            log_a_b += Y[i] - 1/p * (p - 1) * Y[i]
-            log_a_c += 1- 1/p * (p - 1)
+            grad_a_a += X[i] - 1/p * (p - 1) * X[i]
+            grad_a_b += Y[i] - 1/p * (p - 1) * Y[i]
+            grad_a_c += 1- 1/p * (p - 1)
         elif Z[i] == -1:
-            log_p_a += -1/p * (p - 1) * X[i]
-            log_p_b += -1/p * (p - 1) * Y[i]
-            log_p_c += -1/p * (p - 1)
-    log_numb = [[log_a_a,log_a_b,log_a_c],[log_p_a,log_p_b,log_p_c]]
-    return log_numb
+            grad_p_a += -1/p * (p - 1) * X[i]
+            grad_p_b += -1/p * (p - 1) * Y[i]
+            grad_p_c += -1/p * (p - 1)
+    grad_list = [grad_a_a+grad_p_a,grad_a_b+grad_p_b,grad_a_c+grad_p_c]
+    return grad_list
 
 #目标函数
-def loss_function(a, b, c, x, y, z):
+def loss_function(cur_a, cur_b, cur_c, X, Y, Z):
     #1 代表苹果 -1 代表梨
     E = np.e
     P_a = 0
     P_p = 0
-    if z == 1:
-        P_a += a * x + b * y + c - np.log(1+E ** (a * x + b * y + c))
-    else:
-        P_p += -np.log(1+E ** (a * x + b * y + c))
+    for i in xrange(0,len(X)):
+        if Z[i] == 1:
+            P_a += cur_a * X[i] + cur_b * Y[i] + cur_c - np.log((1+E ** (cur_a * X[i] + cur_b * Y[i] + cur_c)))
+            # print "loss_apple:"+str(P_a)
+        else:
+            P_p += -np.log((1+E ** (cur_a * X[i] + cur_b * Y[i] + cur_c)))
+            # print "loss_pear:" + str(P_p)
     P = P_a + P_p
     return P
 
 # begin
 # the number of apple and pear
-numb_a = 100
-numb_p = 100
+numb_a = 10
+numb_p = 10
 
 np.random.seed(10)
 
@@ -64,26 +67,48 @@ Y = np.append(Y_a, Y_p)
 Z = np.append(Z_a, Z_p)
 
 #初始a b c
-a = 1
-b = 2
-c = 3
-
-log_numb=get_log(a,b,c,X,Y,Z)
+cur_a = 1
+cur_b = 1
+cur_c = 1
 
 #收敛值
 eplision = 1e-05
 
-last_loss = 1e8
-cur_loss = 1e7
+last_loss = 1e9
+cur_loss = 1e8
+while abs(last_loss - cur_loss) > eplision:
+    last_loss = cur_loss
+    cur_loss = loss_function(cur_a,cur_b,cur_c,X,Y,Z)
+    grad_list = get_grad(cur_a, cur_b, cur_c, X, Y, Z)
+    print grad_list
+    grad_a = grad_list[0]
+    grad_b = grad_list[1]
+    grad_c = grad_list[2]
+    #控制系数
+    control = 0.00001
+    while True:
+        next_a = cur_a + control * grad_a
+        next_b = cur_a + control * grad_b
+        next_c = cur_c + control * grad_c
+        next_grad_list = get_grad(next_a,next_b,next_c,X,Y,Z)
+        next_grad_a = next_grad_list[0]
+        next_grad_b = next_grad_list[1]
+        next_grad_c = next_grad_list[2]
+        if abs(next_grad_a) > abs(grad_a) and abs(next_grad_b) > abs(grad_b) and abs(next_grad_c) > abs(grad_c):
+            control /= 10
+        else:
+            break
+    print control
+    cur_a += control * grad_list[0]
+    cur_b += control * grad_list[1]
+    cur_c += control * grad_list[2]
 
-# while abs(last_loss - cur_loss) > eplision:
 
 
-
-plt.figure(figsize = (10,20), dpi = 80)
-plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
-plt.legend()
-plt.plot(X_p, Y_p, "o", color = "yellow", label = "pear" )
-plt.legend()
-
-#plt.show()
+# plt.figure(figsize = (10,20), dpi = 80)
+# plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
+# plt.legend()
+# plt.plot(X_p, Y_p, "o", color = "yellow", label = "pear" )
+# plt.legend()
+#
+# plt.show()
