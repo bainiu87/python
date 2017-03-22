@@ -44,8 +44,8 @@ def loss_function(cur_a, cur_b, cur_c, X, Y, Z):
 
 # begin
 # the number of apple and pear
-numb_a = 10
-numb_p = 10
+numb_a = 1000
+numb_p = 1000
 
 np.random.seed(10)
 
@@ -57,7 +57,7 @@ X_a,Y_a = np.random.multivariate_normal(mean=mean_a, cov=cov, size=numb_a).T
 Z_a = np.repeat(1, numb_a)
 
 #pear
-mean_p = [50,50]
+mean_p = [30,30]
 X_p,Y_p = np.random.multivariate_normal(mean=mean_p, cov=cov, size=numb_p).T
 Z_p = np.repeat(-1, numb_p)
 
@@ -67,25 +67,43 @@ Y = np.append(Y_a, Y_p)
 Z = np.append(Z_a, Z_p)
 
 #初始a b c
-cur_a = 1
-cur_b = 1
-cur_c = 1
+cur_a = 2
+cur_b = 2
+cur_c = 2
 
 #收敛值
 eplision = 1e-05
 
+lost_list = []
+grad_a_list = []
+grad_b_list = []
+grad_c_list = []
+numb = 0
 last_loss = 1e9
 cur_loss = 1e8
-while abs(last_loss - cur_loss) > eplision:
+while abs(last_loss - cur_loss) > eplision and numb < 500:
+    numb += 1
+    print "number："+str(numb)
     last_loss = cur_loss
     cur_loss = loss_function(cur_a,cur_b,cur_c,X,Y,Z)
+
+    print "realEplision:"+str(last_loss - cur_loss)
+    #将损失值添加到列表
+    lost_list.append(cur_loss)
+
     grad_list = get_grad(cur_a, cur_b, cur_c, X, Y, Z)
-    print grad_list
+
     grad_a = grad_list[0]
+    grad_a_list.append(abs(grad_a))
+
     grad_b = grad_list[1]
+    grad_b_list.append(abs(grad_b))
+
     grad_c = grad_list[2]
+    grad_c_list.append(abs(grad_c))
+
     #控制系数
-    control = 0.00001
+    control = 0.001/numb
     while True:
         next_a = cur_a + control * grad_a
         next_b = cur_a + control * grad_b
@@ -94,21 +112,44 @@ while abs(last_loss - cur_loss) > eplision:
         next_grad_a = next_grad_list[0]
         next_grad_b = next_grad_list[1]
         next_grad_c = next_grad_list[2]
-        if abs(next_grad_a) > abs(grad_a) and abs(next_grad_b) > abs(grad_b) and abs(next_grad_c) > abs(grad_c):
+        if abs(next_grad_a) > abs(grad_a) and abs(next_grad_b) > abs(grad_b) and abs(next_grad_c) > abs(grad_c) and control > 1e-08:
             control /= 10
         else:
             break
-    print control
-    cur_a += control * grad_list[0]
-    cur_b += control * grad_list[1]
-    cur_c += control * grad_list[2]
+    print "control:"+str(control)
+    cur_a += control * grad_a
+    cur_b += control * grad_b
+    cur_c += control * grad_c
+
+b = -cur_c / cur_b
+max_y = -max(X) * (cur_a/cur_b) + b
+min_y = -min(X) * (cur_a/cur_b) + b
 
 
+nmb_list=[]
+for i in xrange(1,numb+1):
+    nmb_list.append(i)
+plt.figure(figsize = (10,20), dpi = 80)
 
-# plt.figure(figsize = (10,20), dpi = 80)
-# plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
-# plt.legend()
-# plt.plot(X_p, Y_p, "o", color = "yellow", label = "pear" )
-# plt.legend()
-#
-# plt.show()
+plt.subplot(2,1,1)
+plt.plot([min(X),max(X)],[min_y,max_y], "-", color = "black", label="bestLine")
+plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
+plt.plot(X_p, Y_p, "o", color = "yellow", label = "pear" )
+plt.legend()
+
+plt.subplot(2,4,5)
+plt.plot(nmb_list,lost_list,"ro-",label="lost")
+plt.legend()
+
+plt.subplot(2,4,6)
+plt.plot(nmb_list,grad_a_list,"ro-",label="grad_a")
+plt.legend()
+
+plt.subplot(2,4,7)
+plt.plot(nmb_list,grad_b_list,"ro-",label="grad_b")
+plt.legend()
+
+plt.subplot(2,4,8)
+plt.plot(nmb_list,grad_b_list,"ro-",label="grad_c")
+plt.legend()
+plt.show()
