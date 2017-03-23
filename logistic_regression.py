@@ -12,7 +12,7 @@ from operator import itemgetter
 """
 #求目标函数的导数
 def get_grad(cur_a, cur_b, cur_c, X, Y, Z):
-    # 1 代表 苹果 -1 代表梨
+    # 1 代表 苹果 -1 代表梨 lamda L2正则化超参
     lamda = 0.001
     E = np.e
     grad_a_a = 0
@@ -36,7 +36,7 @@ def get_grad(cur_a, cur_b, cur_c, X, Y, Z):
 
 #目标函数
 def loss_function(cur_a, cur_b, cur_c, X, Y, Z):
-    #1 代表苹果 -1 代表梨
+    #1 代表苹果 -1 代表梨 lamda L2正则化超参
     E = np.e
     lamda = 0.001
     P_a = 0
@@ -48,6 +48,7 @@ def loss_function(cur_a, cur_b, cur_c, X, Y, Z):
         else:
             P_p += -np.log((1+E ** (cur_a * X[i] + cur_b * Y[i] + cur_c)))
             # print "loss_pear:" + str(P_p)
+    # 加入L2 正则化
     P = P_a + P_p + lamda * (cur_a ** 2 + cur_b ** 2 + cur_c ** 2)
     return P
 
