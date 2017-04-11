@@ -36,8 +36,11 @@ def entropy(Z):
     Number_a = list(Z).count(1)
     Number_p = list(Z).count(0)
     Number_all = len(Z)
-    Entropy = -( (Number_a / (Number_all * 1.0)) * np.log(Number_a / (Number_all * 1.0)) + (Number_p / (Number_all * 1.0)) * np.log(Number_p / (Number_all * 1.0)) )
-    return Entropy
+    if Number_all == 0:
+        return 0
+    else:
+        Entropy = -( (Number_a / (Number_all * 1.0)) * np.log(Number_a / (Number_all * 1.0) + 1.0) + (Number_p / (Number_all * 1.0)) * np.log(Number_p / (Number_all * 1.0) + 1.0) )
+        return Entropy
 
 #返回分裂规则
 def split(X, Y, Z, R):
@@ -77,12 +80,58 @@ def split(X, Y, Z, R):
         if cur_entropy_diff_y > best_entropy:
             best_split_y = split_i_y
             best_entropy = cur_entropy_diff_y
-    
+    if best_split_y == "":
+        return ["x",best_split_x]
+    else:
+        return ["y",best_split_y]
 
-
+#label 平均值
 label_avg_1 = get_label_avg(Z)
+
 #根节点熵
 R = entropy(Z)
+
+best_split = split(X, Y, Z, R)
+print "分割点"+str(best_split)
+X_l_1 = []
+Y_l_1 = []
+Z_l_1 = []
+X_r_1 = []
+Y_r_1 = []
+Z_r_1 = []
+if best_split[0] == "x":
+    for i in xrange(0,len(X)):
+        if X[i] >= best_split[1]:
+            X_l_1.append(X[i])
+            Y_l_1.append(Y[i])
+            Z_l_1.append(Z[i])
+        else:
+            X_r_1.append(X[i])
+            Y_r_1.append(Y[i])
+            Z_r_1.append(Z[i])
+else:
+    for i in (0,len(Y)):
+        if Y[i] >= best_split[1]:
+            X_l_1.append(X[i])
+            Y_l_1.append(Y[i])
+            Z_l_1.append(Z[i])
+        else:
+            X_r_1.append(X[i])
+            Y_r_1.append(Y[i])
+            Z_r_1.append(Z[i])
+
+
+numb_a_l = Z_l_1.count(1)
+numb_l = len(Z_l_1)
+
+numb_a_r = Z_r_1.count(1)
+numb_r = len(Z_r_1)
+
+if numb_a_l/(numb_l*1.0) > numb_a_r/(numb_r*1.0):
+    for l in xrange()
+
+
+
 
 plt.figure(figsize = (10,10),dpi = 80)
 plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
