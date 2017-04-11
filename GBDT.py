@@ -28,13 +28,19 @@ def get_label_avg(Z):
     avg = 0
     for i in Z:
         avg += i
-    label = avg/(len(Z)*0.1)
+    label = avg/(len(Z)*1.0)
     return label
+#熵求值函数
+def entropy(Z):
+    Number_a = list(Z).count(1)
+    Number_p = list(Z).count(0)
+    Number_all = len(Z)
+    Entropy = -( (Number_a / (Number_all * 1.0)) * np.log(Number_a / (Number_all * 1.0)) + (Number_p / (Number_all * 1.0)) * np.log(Number_p / (Number_all * 1.0)) )
+    return Entropy
 
 label_avg_1 = get_label_avg(Z)
 #根节点熵
-R = -((numb_a / ((numb_a + numb_p) * 0.1)) * np.log(numb_a / ((numb_a + numb_p) * 0.1)) + (numb_p / ((numb_a + numb_p) * 0.1)) * np.log(numb_p / ((numb_a + numb_p) * 0.1)))
-
+R = entropy(Z)
 
 plt.figure(figsize = (10,10),dpi = 80)
 plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
