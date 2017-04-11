@@ -30,6 +30,7 @@ def get_label_avg(Z):
         avg += i
     label = avg/(len(Z)*1.0)
     return label
+
 #熵求值函数
 def entropy(Z):
     Number_a = list(Z).count(1)
@@ -37,6 +38,47 @@ def entropy(Z):
     Number_all = len(Z)
     Entropy = -( (Number_a / (Number_all * 1.0)) * np.log(Number_a / (Number_all * 1.0)) + (Number_p / (Number_all * 1.0)) * np.log(Number_p / (Number_all * 1.0)) )
     return Entropy
+
+#返回分裂规则
+def split(X, Y, Z, R):
+    best_split_x = ""
+    best_entropy = 0.001
+    best_split_y = ""
+    for split_i_x in X:
+        left_x = []
+        right_x = []
+        n_x = 0
+        for cur_i_x in X:
+            if cur_i_x <= split_i_x:
+                left_x.append(Z[n_x])
+            else:
+                right_x.append(Z[n_x])
+            n_x += 1
+        R_l_x = entropy(left_x)
+        R_r_x = entropy(right_x)
+        cur_entropy_diff_x = R - R_l_x - R_r_x
+        if cur_entropy_diff_x > best_entropy:
+            best_split_x = split_i_x
+            best_entropy = cur_entropy_diff_x
+
+    for split_i_y in Y:
+        left_y = []
+        right_y = []
+        n_y = 0
+        for cur_i_y in Y:
+            if cur_i_y <= split_i_y:
+                left_y.append(Z[n_y])
+            else:
+                right_y.append(Z[n_y])
+            n_y += 1
+        R_l_y = entropy(left_y)
+        R_r_y = entropy(right_y)
+        cur_entropy_diff_y = R - R_l_y - R_r_y
+        if cur_entropy_diff_y > best_entropy:
+            best_split_y = split_i_y
+            best_entropy = cur_entropy_diff_y
+    
+
 
 label_avg_1 = get_label_avg(Z)
 #根节点熵
