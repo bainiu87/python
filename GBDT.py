@@ -36,7 +36,7 @@ def get_label_avg(Z):
     label = avg/(len(Z)*1.0)
     return label
 
-#ems求值函数
+#mse求值函数
 def entropy(Z):
     result = 0
     if len(Z) == 0:
