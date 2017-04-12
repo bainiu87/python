@@ -126,17 +126,20 @@ numb_l = len(Z_l_1)
 
 numb_a_r = Z_r_1.count(1)
 numb_r = len(Z_r_1)
-
-if numb_a_l/(numb_l*1.0) > numb_a_r/(numb_r*1.0):
-    for l in xrange()
-
-
-
-
 plt.figure(figsize = (10,10),dpi = 80)
-plt.plot(X_a, Y_a, "o", color = "red", label = "apple")
-plt.plot(X_p, Y_p, "o", color = "blue", label = "pear")
-plt.legend()
+if numb_a_l/(numb_l*1.0) > numb_a_r/(numb_r*1.0):
+    for i in xrange(0,numb_l):
+        if Z_l_1[i] == 0:
+            plt.plot(X_l_1[i],Y_l_1[i],".",color = "red")
+        else:
+            plt.plot(X_l_1[i],Y_l_1[i],".",color = "green")
+    plt.title("left apple")
+else:
+    for i in xrange(0,numb_r):
+        if Z_r_1[i] == 0:
+            plt.plot(X_r_1[i],Y_l_1[i],".",color="red")
+        else:
+            plt.plot(X_r_1[i],Y_l_1[i],".",color="green")
+    plt.title("right apple")
 
-
-#plt.show()
+plt.show()
