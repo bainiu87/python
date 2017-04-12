@@ -18,6 +18,11 @@ mean_p = [10,10]
 X_p,Y_p = np.random.multivariate_normal(mean=mean_p, cov=cov, size=numb_p).T
 Z_p = np.repeat(0,numb_p)
 
+plt.figure(figsize = (10,10),dpi = 80)
+plt.subplot(211)
+
+plt.plot(X_a,Y_a,'o',c='red')
+plt.plot(X_p,Y_p,'o')
 #合并
 X = np.append(X_a,X_p)
 Y = np.append(Y_a,Y_p)
@@ -101,7 +106,7 @@ Y_r_1 = []
 Z_r_1 = []
 if best_split[0] == "x":
     for i in xrange(0,len(X)):
-        if X[i] >= best_split[1]:
+        if X[i] <= best_split[1]:
             X_l_1.append(X[i])
             Y_l_1.append(Y[i])
             Z_l_1.append(Z[i])
@@ -111,7 +116,7 @@ if best_split[0] == "x":
             Z_r_1.append(Z[i])
 else:
     for i in (0,len(Y)):
-        if Y[i] >= best_split[1]:
+        if Y[i] <= best_split[1]:
             X_l_1.append(X[i])
             Y_l_1.append(Y[i])
             Z_l_1.append(Z[i])
@@ -126,20 +131,44 @@ numb_l = len(Z_l_1)
 
 numb_a_r = Z_r_1.count(1)
 numb_r = len(Z_r_1)
-plt.figure(figsize = (10,10),dpi = 80)
-if numb_a_l/(numb_l*1.0) > numb_a_r/(numb_r*1.0):
-    for i in xrange(0,numb_l):
-        if Z_l_1[i] == 0:
-            plt.plot(X_l_1[i],Y_l_1[i],".",color = "red")
-        else:
-            plt.plot(X_l_1[i],Y_l_1[i],".",color = "green")
-    plt.title("left apple")
-else:
-    for i in xrange(0,numb_r):
-        if Z_r_1[i] == 0:
-            plt.plot(X_r_1[i],Y_l_1[i],".",color="red")
-        else:
-            plt.plot(X_r_1[i],Y_l_1[i],".",color="green")
-    plt.title("right apple")
 
+
+plt.subplot(212)
+
+
+right_x = []
+right_y = []
+wrong_x = []
+wrong_y = []
+for i in xrange(0, numb_l):
+
+    if numb_a_l / (numb_l * 1.0) > numb_a_r / (numb_r * 1.0):
+        r = 1
+    else:
+        r = 0
+
+    if Z_l_1[i] == r:
+        right_x.append(X_l_1[i])
+        right_y.append(Y_l_1[i])
+    else:
+        wrong_x.append(X_l_1[i])
+        wrong_y.append(Y_l_1[i])
+
+for i in xrange(0, numb_r):
+
+    if numb_a_r / (numb_r * 1.0) > numb_a_l / (numb_l * 1.0):
+        r = 1
+    else:
+        r = 0
+
+    if Z_r_1[i] == r:
+        right_x.append(X_r_1[i])
+        right_y.append(Y_r_1[i])
+    else:
+        wrong_x.append(X_r_1[i])
+        wrong_y.append(Y_r_1[i])
+
+
+plt.plot(right_x,right_y,'o', c='g')
+plt.plot(wrong_x,wrong_y,'o', c='r')
 plt.show()
